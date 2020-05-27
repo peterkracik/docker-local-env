@@ -42,11 +42,11 @@ services:
 
   php:
     container_name: simply-good-php
-    build: ./_docker
+    build: ./
     restart: always
     volumes:
       - ${APP_FOLDER}:/var/www/html:cached
-      - ./_docker/php.conf:/usr/local/etc/php-fpm.d/www.conf:cached
+      - ./php.conf:/usr/local/etc/php-fpm.d/www.conf:cached
     networks:
       - backend
     labels:
