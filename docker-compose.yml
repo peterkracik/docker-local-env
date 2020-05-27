@@ -31,17 +31,17 @@ services:
     ports:
       - 3307:3306
     environment:
-      MYSQL_ROOT_PASSWORD: pass4bdd
-      MYSQL_DATABASE: simplygood
-      MYSQL_USER: simplygood
-      MYSQL_PASSWORD: pass4bdd
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ../data:/var/lib/mysql
+      - ./data:/var/lib/mysql
     networks:
       - backend
 
   php:
-    container_name: simply-good-php
+    container_name: ${PROJECT_NAME}-php
     build: ./
     restart: always
     volumes:
