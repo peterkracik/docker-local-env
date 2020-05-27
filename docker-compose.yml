@@ -1,0 +1,59 @@
+version: '3.7'
+
+services:
+  nginx:
+    container_name: ${PROJECT_NAME}-nginx
+    image: nginx
+    volumes:
+      - ${APP_FOLDER}:/var/www/html:cached
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:cached
+    depends_on:
+      - php
+    networks:
+      - backend
+      - web
+    labels:
+      #### Labels define the behavior and rules of the traefik proxy for this container ####
+      - "traefik.enable=true" # <== Enable traefik to proxy this container
+      - "traefik.http.routers.${PROJECT_NAME}-web.rule=Host(`${PROJECT_URL}`)" # <== Your Domain Name goes here for the http rule
+      - "traefik.http.routers.${PROJECT_NAME}-web.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
+      - "traefik.http.routers.${PROJECT_NAME}-web.middlewares=redirect@file" # <== This is a middleware to redirect to https
+      - "traefik.http.routers.${PROJECT_NAME}-secured.rule=Host(`${PROJECT_URL}`)" # <== Your Domain Name for the https rule
+      - "traefik.http.routers.${PROJECT_NAME}-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+      - "traefik.http.routers.${PROJECT_NAME}-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+
+
+  db:
+    container_name: ${PROJECT_NAME}-db
+    image: mariadb
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: pass4bdd
+      MYSQL_DATABASE: simplygood
+      MYSQL_USER: simplygood
+      MYSQL_PASSWORD: pass4bdd
+    volumes:
+      - ../data:/var/lib/mysql
+    networks:
+      - backend
+
+  php:
+    container_name: simply-good-php
+    build: ./_docker
+    restart: always
+    volumes:
+      - ${APP_FOLDER}:/var/www/html:cached
+      - ./_docker/php.conf:/usr/local/etc/php-fpm.d/www.conf:cached
+    networks:
+      - backend
+    labels:
+      - "traefik.enable=false"
+
+networks:
+  web:
+    external: true
+  backend:
+    external: false
