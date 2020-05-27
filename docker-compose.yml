@@ -44,13 +44,13 @@ services:
       - web
     labels:
       - "traefik.enable=true" # <== Enable traefik to proxy this container
-      - "traefik.tcp.routers.{PROJECT_NAME}-db.rule=HostSNI(`${URL}`)"
-      - "traefik.tcp.routers.{PROJECT_NAME}-db.entrypoints=mysql"
-      - "traefik.tcp.routers.{PROJECT_NAME}-db.tls=true"
-      - "traefik.tcp.routers.{PROJECT_NAME}-db.tls.passthrough=true"
+      - "traefik.tcp.routers.${PROJECT_NAME}-db.rule=HostSNI(`${URL}`)"
+      - "traefik.tcp.routers.${PROJECT_NAME}-db.entrypoints=mysql"
+      - "traefik.tcp.routers.${PROJECT_NAME}-db.tls=true"
+      - "traefik.tcp.routers.${PROJECT_NAME}-db.tls.passthrough=true"
       # - "traefik.tcp.services.{PROJECT_NAME}-db.loadbalancer.server.port=3306"
-      # - "traefik.tcp.routers.{PROJECT_NAME}-db.service=mysql-svc"
-      # - "traefik.tcp.services.mysql-svc.loadbalancer.server.port=3306"
+      - "traefik.tcp.routers.{PROJECT_NAME}-db.service=mysql-svc"
+      - "traefik.tcp.services.mysql-svc.loadbalancer.server.port=3306"
 
   php:
     container_name: ${PROJECT_NAME}-php
