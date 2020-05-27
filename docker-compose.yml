@@ -15,10 +15,10 @@ services:
     labels:
       #### Labels define the behavior and rules of the traefik proxy for this container ####
       - "traefik.enable=true" # <== Enable traefik to proxy this container
-      - "traefik.http.routers.${PROJECT_NAME}-web.rule=Host(`${PROJECT_URL}`)" # <== Your Domain Name goes here for the http rule
+      - "traefik.http.routers.${PROJECT_NAME}-web.rule=Host(`${URL}`)" # <== Your Domain Name goes here for the http rule
       - "traefik.http.routers.${PROJECT_NAME}-web.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
       - "traefik.http.routers.${PROJECT_NAME}-web.middlewares=redirect@file" # <== This is a middleware to redirect to https
-      - "traefik.http.routers.${PROJECT_NAME}-secured.rule=Host(`${PROJECT_URL}`)" # <== Your Domain Name for the https rule
+      - "traefik.http.routers.${PROJECT_NAME}-secured.rule=Host(`${URL}`)" # <== Your Domain Name for the https rule
       - "traefik.http.routers.${PROJECT_NAME}-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
       - "traefik.http.routers.${PROJECT_NAME}-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
 
