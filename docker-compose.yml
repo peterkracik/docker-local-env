@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   nginx:
-    container_name: ${PROJECT_NAME}-nginx
+    container_name: ${COMPOSE_PROJECT_NAME}-nginx
     image: nginx
     volumes:
       - ${APP_FOLDER}:/var/www/html:cached
@@ -15,18 +15,18 @@ services:
     labels:
       #### Labels define the behavior and rules of the traefik proxy for this container ####
       - "traefik.enable=true" # <== Enable traefik to proxy this container
-      - "traefik.http.routers.${PROJECT_NAME}-http.rule=Host(`${URL}`)" # <== Your Domain Name goes here for the http rule
-      - "traefik.http.routers.${PROJECT_NAME}-http.entrypoints=http" # <== Defining the entrypoint for http, **ref: line 30
-      - "traefik.http.routers.${PROJECT_NAME}-http.middlewares=redirect@file" # <== This is a middleware to redirect to https
-      - "traefik.http.routers.${PROJECT_NAME}-https.rule=Host(`${URL}`)" # <== Your Domain Name for the https rule
-      - "traefik.http.routers.${PROJECT_NAME}-https.entrypoints=https" # <== Defining entrypoint for https, **ref: line 31
-      - "traefik.http.routers.${PROJECT_NAME}-https.tls.certresolver=mytlschallenge"
-      # - "traefik.http.routers.${PROJECT_NAME}-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
-      # - "traefik.http.routers.${PROJECT_NAME}-https.tls=true"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.rule=Host(`${URL}`)" # <== Your Domain Name goes here for the http rule
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.entrypoints=http" # <== Defining the entrypoint for http, **ref: line 30
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.middlewares=redirect@file" # <== This is a middleware to redirect to https
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-https.rule=Host(`${URL}`)" # <== Your Domain Name for the https rule
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-https.entrypoints=https" # <== Defining entrypoint for https, **ref: line 31
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-https.tls.certresolver=mytlschallenge"
+      # - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+      # - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-https.tls=true"
 
 
   db:
-    container_name: ${PROJECT_NAME}-db
+    container_name: ${COMPOSE_PROJECT_NAME}-db
     image: mariadb
     command: --default-authentication-plugin=mysql_native_password
     restart: always
@@ -44,16 +44,16 @@ services:
       - web
     labels:
       - "traefik.enable=true" # <== Enable traefik to proxy this container
-      - "traefik.tcp.routers.${PROJECT_NAME}-db.rule=HostSNI(`${URL}`)"
-      - "traefik.tcp.routers.${PROJECT_NAME}-db.entrypoints=mysql"
-      - "traefik.tcp.routers.${PROJECT_NAME}-db.tls=true"
-      - "traefik.tcp.routers.${PROJECT_NAME}-db.tls.passthrough=true"
-      # - "traefik.tcp.services.{PROJECT_NAME}-db.loadbalancer.server.port=3306"
-      - "traefik.tcp.routers.{PROJECT_NAME}-db.service=mysql-svc"
+      - "traefik.tcp.routers.${COMPOSE_PROJECT_NAME}-db.rule=HostSNI(`${URL}`)"
+      - "traefik.tcp.routers.${COMPOSE_PROJECT_NAME}-db.entrypoints=mysql"
+      - "traefik.tcp.routers.${COMPOSE_PROJECT_NAME}-db.tls=true"
+      - "traefik.tcp.routers.${COMPOSE_PROJECT_NAME}-db.tls.passthrough=true"
+      # - "traefik.tcp.services.{COMPOSE_PROJECT_NAME}-db.loadbalancer.server.port=3306"
+      - "traefik.tcp.routers.{COMPOSE_PROJECT_NAME}-db.service=mysql-svc"
       - "traefik.tcp.services.mysql-svc.loadbalancer.server.port=3306"
 
   php:
-    container_name: ${PROJECT_NAME}-php
+    container_name: ${COMPOSE_PROJECT_NAME}-php
     build: ./
     restart: always
     volumes:
