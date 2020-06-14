@@ -28,7 +28,6 @@ services:
   php:
     container_name: ${COMPOSE_PROJECT_NAME}-php
     build: ./
-    restart: always
     volumes:
       - ${APP_FOLDER}:/var/www/html:cached
       - ./php.conf:/usr/local/etc/php-fpm.d/www.conf:cached
