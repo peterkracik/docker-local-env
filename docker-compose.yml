@@ -25,42 +25,15 @@ services:
       # - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-https.tls=true"
 
 
-  db:
-    container_name: ${COMPOSE_PROJECT_NAME}-db
-    image: mariadb
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    ports:
-      - ${DB_PORT}:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - ./data/db:/var/lib/mysql
-    networks:
-      - backend
-      - web
-    labels:
-      - "traefik.enable=true" # <== Enable traefik to proxy this container
-      - "traefik.tcp.routers.${COMPOSE_PROJECT_NAME}-db.rule=HostSNI(`${URL}`)"
-      - "traefik.tcp.routers.${COMPOSE_PROJECT_NAME}-db.entrypoints=mysql"
-      - "traefik.tcp.routers.${COMPOSE_PROJECT_NAME}-db.tls=true"
-      - "traefik.tcp.routers.${COMPOSE_PROJECT_NAME}-db.tls.passthrough=true"
-      # - "traefik.tcp.services.{COMPOSE_PROJECT_NAME}-db.loadbalancer.server.port=3306"
-      - "traefik.tcp.routers.{COMPOSE_PROJECT_NAME}-db.service=mysql-svc"
-      - "traefik.tcp.services.mysql-svc.loadbalancer.server.port=3306"
-
   php:
     container_name: ${COMPOSE_PROJECT_NAME}-php
     build: ./
-    restart: always
     volumes:
       - ${APP_FOLDER}:/var/www/html:cached
       - ./php.conf:/usr/local/etc/php-fpm.d/www.conf:cached
     networks:
       - backend
+      - db
     env_file:
       - .env
     labels:
@@ -71,3 +44,5 @@ networks:
     external: true
   backend:
     external: false
+  db:
+    external: true

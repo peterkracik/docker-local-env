@@ -15,7 +15,8 @@ RUN docker-php-ext-configure zip --with-libzip \
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar \
-    && mv wp-cli.phar /usr/local/bin/wp
+    && mv wp-cli.phar /usr/local/bin/wp \
+    && alias wp='wp --allow-root'
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
