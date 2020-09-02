@@ -3,7 +3,7 @@ FROM php:7.3.8-fpm
 ENV PS1="\u@\h:\w\\$ "
 
 RUN apt-get update && apt-get upgrade -yy \
-    && apt-get install --no-install-recommends libjpeg-dev libpng-dev libwebp-dev \
+    && apt-get install --no-install-recommends less vim libjpeg-dev libpng-dev libwebp-dev \
     libzip-dev libfreetype6-dev supervisor zip \
     unzip software-properties-common -yy \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

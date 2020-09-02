@@ -12,6 +12,8 @@ services:
     networks:
       - backend
       - web
+    # ports:
+    #   - 82:80
     labels:
       #### Labels define the behavior and rules of the traefik proxy for this container ####
       - "traefik.enable=true" # <== Enable traefik to proxy this container
